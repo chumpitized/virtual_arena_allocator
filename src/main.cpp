@@ -115,5 +115,13 @@ int main() {
 	std::cout << std::endl;
 	std::cout << "Committed should be 12288: " << a.committed << std::endl;
 
+	//Now let's clear the arena. This won't uncommit any of our committed memory, but it will
+	//return curr_offset to 0 and allow us to allocate up to 12288 bytes without any new
+	//virtual allocations.
+	std::cout << std::endl;
+	std::cout << "Clearing the arena..." << std::endl;
+	arena_clear(&a);
+	std::cout << "Current offset is " << a.curr_offset << std::endl;
+
 	return 0;
 }
