@@ -52,11 +52,14 @@ size_t commit_memory(Arena *a, size_t size) {
 
 	size_t diff = total_alloc - a->committed;
 
-	if (diff % PAGE_SIZE == 0) {
-		return diff;
-	} else {
-		return ((diff / PAGE_SIZE) + 1) * PAGE_SIZE;
-	}
+	//use bitwise operators to avoid conditional branch...
+	return (diff + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
+
+	//if (diff % PAGE_SIZE == 0) {
+	//	return diff;
+	//} else {
+	//	return ((diff / PAGE_SIZE) + 1) * PAGE_SIZE;
+	//}
 }
 
 void *arena_alloc(Arena *a, size_t size, size_t align) {
@@ -79,6 +82,10 @@ void *arena_alloc(Arena *a, size_t size, size_t align) {
 	}
 
 	return NULL;
+}
+
+void arena_clear(Arena *a) {
+	a->curr_offset = 0;
 }
 
 int main() {
