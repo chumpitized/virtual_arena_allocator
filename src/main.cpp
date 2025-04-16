@@ -123,5 +123,8 @@ int main() {
 	arena_clear(&a);
 	std::cout << "Current offset is " << a.curr_offset << std::endl;
 
+	std::cout << std::endl;
+	std::cout << "Committed should be 12288: " << a.committed << std::endl;
+
 	return 0;
 }
