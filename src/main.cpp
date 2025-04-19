@@ -2,6 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include <windows.h>
+#include <atomic>
 
 #ifndef DEFAULT_ALIGNMENT
 #define DEFAULT_ALIGNMENT sizeof(void *)
@@ -22,7 +23,7 @@ struct Arena {
 };
 
 void arena_init(Arena *a, size_t length) {
-	a->buffer 		= (unsigned char *)VirtualAlloc(NULL, length, MEM_COMMIT, PAGE_READWRITE);
+	a->buffer 		= (unsigned char *)VirtualAlloc(NULL, length, MEM_RESERVE, PAGE_READWRITE);
 	a->committed 	= 0;
 	a->length 		= length;
 	a->curr_offset 	= 0;
@@ -65,7 +66,7 @@ void *arena_alloc(Arena *a, size_t size, size_t align) {
 
 		size_t to_commit = commit_memory(a, offset, size);
 		if (to_commit > 0) {
-			VirtualAlloc(&a->buffer[offset], to_commit, MEM_COMMIT, PAGE_READWRITE);
+			VirtualAlloc(&a->buffer[a->committed], to_commit, MEM_COMMIT, PAGE_READWRITE);
 			a->committed += to_commit;
 		}
 
